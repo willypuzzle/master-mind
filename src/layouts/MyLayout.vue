@@ -37,6 +37,10 @@
           <q-item-side icon="settings" />
           <q-item-main :label="$t('configuration.menu.label')" />
         </q-item>
+        <q-item :to="{name: 'game'}">
+          <q-item-side icon="play_arrow" />
+          <q-item-main :label="$t('game.menu.label')" />
+        </q-item>
       </q-list>
     </q-layout-drawer>
 

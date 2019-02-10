@@ -17,6 +17,19 @@ export default {
       label: 'Range'
     }
   },
+  game: {
+    buttons: {
+      start: 'Start',
+      stop: 'Give up!',
+      try: 'Try!'
+    },
+    inputs: {
+      main: 'Insert Guessing...'
+    },
+    menu: {
+      label: 'Game'
+    }
+  },
   failed: 'Action failed',
   success: 'Action was successful'
 }
