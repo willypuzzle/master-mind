@@ -10,3 +10,13 @@
 
 > Additional features
 - Support for i18n (only english is supported at the moment)
+
+## Instructions
+
+### Development environment
+> It requires npm package manager:
+
+- Install [quasar-cli](https://quasar-framework.org/guide/quasar-cli.html).
+
+- Launch `npm install` command
+- Launch `quasar dev` command
