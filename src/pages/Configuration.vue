@@ -5,7 +5,7 @@
     </h3>
     <div class="row">
       <div class="col-6 q-pa-sm">
-        <div>{{ $t('configuration.number_of_digits.label') }}</div>
+        <div>{{ $t('configuration.number_of_digits.label') }}: {{ numberOfDigits }}</div>
         <q-slider
           :value="numberOfDigits"
           @input="setNumberOfDigits($event)"
@@ -17,7 +17,7 @@
         />
       </div>
       <div class="col-6 q-pa-sm">
-        <div>{{ $t('configuration.range.label') }}</div>
+        <div>{{ $t('configuration.range.label') }}: {{ range.min }} - {{ range.max }}</div>
         <q-range
           :value="range"
           @input="setRange($event)"

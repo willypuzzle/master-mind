@@ -3,6 +3,9 @@
     <h3 class="row justify-center">
       {{ $t('game.menu.label') }}
     </h3>
+    <h5 class="row justify-center">
+      {{ $t('configuration.number_of_digits.label') }}: {{ numberOfDigits }}, {{ $t('configuration.range.label') }}: {{ range.min }} - {{ range.max }}
+    </h5>
     <div class="row">
       <div class="col-3 q-pa-sm">
         <q-btn
@@ -39,10 +42,14 @@
 
 <script>
 import ConfigurationStore from './mixins/ConfigurationStore.vue'
-import {buildGuessingData, guess} from './helpers/game.js'
+import {buildGuessingData, guess, makeStringFromGuessingData} from './helpers/game.js'
+import Response from './components/game/Response.vue'
 export default {
   mixins: [ConfigurationStore],
   name: 'PageGame',
+  components: {
+    Response
+  },
   data () {
     return {
       gameStarted: false,
@@ -56,6 +63,7 @@ export default {
     toggleGame () {
       if (this.gameStarted) {
         this.gameStarted = false
+        this.surrender()
       } else {
         this.gameStarted = true
         this.guessingData = buildGuessingData({
@@ -64,17 +72,23 @@ export default {
         })
       }
     },
+    surrender () {
+      this.guessingResponse = {
+        surrender: true,
+        secret: makeStringFromGuessingData(this.guessingData)
+      }
+    },
     tryOn () {
       this.error = false
-      if (!this.validateData(this.inputData)) {
+      if (!this.validateData(this.inputData, this.guessingData.length)) {
         this.error = true
         return
       }
       this.guessingResponse = guess({input: this.inputData, data: this.guessingData})
     },
-    validateData (inputData) {
-      const inputValue = String(inputData)
-      return !(inputValue.trim().length === 0 || inputValue.indexOf('.') !== -1 || isNaN(parseInt(inputValue)))
+    validateData (inputData, length) {
+      const inputValue = String(inputData).trim()
+      return !(inputValue.length === 0 || inputValue.indexOf('.') !== -1 || isNaN(parseInt(inputValue)) || length !== inputValue.length)
     }
   }
 }
