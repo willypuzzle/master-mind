@@ -32,7 +32,7 @@
         link
         inset-delimiter
       >
-        <q-list-header>Essential Links</q-list-header>
+        <q-list-header></q-list-header>
         <q-item :to="{name: 'configuration'}">
           <q-item-side icon="settings" />
           <q-item-main :label="$t('configuration.menu.label')" />

@@ -11,13 +11,13 @@
         <q-btn
           :color="gameStarted ? 'white' : 'primary'"
           :text-color="gameStarted ? 'black' : 'white'"
-          :label="gameStarted ? $t('game.buttons.stop') : $t('game.buttons.start')"
+          :label="startButtonLabel"
           @click="toggleGame"
         />
       </div>
       <div class="col-6 q-pa-sm">
         <q-input
-          v-if="gameStarted"
+          v-if="gameStarted && !startCondition"
           v-model="inputData"
           :float-label="$t('game.inputs.main')"
           :error="error"
@@ -26,7 +26,7 @@
       </div>
       <div class="col-3 q-pa-sm">
         <q-btn
-          v-if="gameStarted"
+          v-if="gameStarted && !startCondition"
           color="primary"
           :label="$t('game.buttons.try')"
           @click="tryOn"
@@ -50,6 +50,22 @@ export default {
   components: {
     Response
   },
+  beforeRouteLeave (to, from, next) {
+    // called when the route that renders this component is about to
+    // be navigated away from.
+    if (this.gameStarted) {
+      this.$q.dialog({
+        title: this.$t('game.warning.leave.title'),
+        message: this.$t('game.warning.leave.message'),
+        ok: this.$t('buttons.ok.text'),
+        cancel: this.$t('buttons.cancel.text')
+      }).then(() => {
+        next()
+      }).catch(() => {})
+    } else {
+      next()
+    }
+  },
   data () {
     return {
       gameStarted: false,
@@ -59,13 +75,22 @@ export default {
       guessingResponse: false
     }
   },
+  computed: {
+    startCondition () {
+      return this.guessingResponse && (this.guessingResponse.won || this.guessingResponse.surrender)
+    },
+    startButtonLabel () {
+      return this.startCondition ? this.$t('game.buttons.play_again') : (this.gameStarted ? this.$t('game.buttons.stop') : this.$t('game.buttons.start'))
+    }
+  },
   methods: {
     toggleGame () {
-      if (this.gameStarted) {
-        this.gameStarted = false
+      if (this.gameStarted && !this.startCondition) {
         this.surrender()
       } else {
         this.gameStarted = true
+        this.inputData = ''
+        this.guessingResponse = false
         this.guessingData = buildGuessingData({
           range: this.range,
           numberOfDigits: this.numberOfDigits
@@ -77,6 +102,10 @@ export default {
         surrender: true,
         secret: makeStringFromGuessingData(this.guessingData)
       }
+      this.gameStarted = false
+      this.inputData = ''
+      this.error = false
+      this.guessingData = null
     },
     tryOn () {
       this.error = false
